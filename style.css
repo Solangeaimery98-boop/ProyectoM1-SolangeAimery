@@ -31,20 +31,40 @@ nav {
   display: flex;
   justify-content: space-between;
   background-color: grey;
-  padding: 30px;
 }
 /* El contenedor de la paleta ocupa toda la pantalla */
-
-#palletteContainer {
+.logoImg {
+  width: 150px;
+}
+#paletteContainer {
   display: flex;
-  height: 100vh;
+  height: 70vh;
   width: 100%;
+}
+
+.color-box {
+  flex: 1; /* cada caja ocupa el mismo espacio disponible */
+  transition: flex 0.3s ease; /* animación suave si cambia el tamaño */
+  cursor: pointer;
+  background-color: aqua;
+  border: 3px;
+  border-color: black;
+}
+
+/* Efecto hover: la caja que tocás se agranda un poco */
+.color-box:hover {
+  flex: 1.5;
+}
+
+select {
+  margin: 10px;
 }
 
 #interactionContainer {
   display: flex;
   justify-content: center;
   padding: 20px;
+  background-color: lightgray;
 }
 
 .paletteInputs {
@@ -53,6 +73,11 @@ nav {
   justify-content: center;
   align-items: center;
 }
+
+input {
+  margin: 5px;
+}
+
 footer {
   display: flex;
   justify-content: space-around;
