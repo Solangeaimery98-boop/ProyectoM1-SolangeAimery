@@ -4,6 +4,7 @@ const generateButton = document.getElementById("generateButton");
 const miSelect = document.getElementById("backgroundColor");
 const navbar = document.getElementById("navbar");
 const interactionContainer = document.getElementById("interactionContainer");
+const selectedFormat = document.getElementById("format");
 
 const radioButtons = document.querySelectorAll('input[name="size"]');
 radioButtons.forEach((radiobutton) => {
@@ -39,16 +40,32 @@ const generateColorBoxes = () => {
   );
   container.innerHTML = "";
   const selectedSize = selectedRadioButton.value;
-  for (let i = 0; i < selectedSize; i++) {
-    const colorDiv = document.createElement("div");
-    const color = generateRandomColorHex();
-    colorDiv.classList.add("color-box");
-    colorDiv.style.backgroundColor = color;
-    container.appendChild(colorDiv);
+  if (selectedFormat.value === "hex") {
+    for (let i = 0; i < selectedSize; i++) {
+      const colorDiv = document.createElement("div");
+      const color = generateRandomColorHex();
+      colorDiv.classList.add("color-box");
+      colorDiv.style.backgroundColor = color;
+      container.appendChild(colorDiv);
+    }
+  }
+  if (selectedFormat.value === "hsl") {
+    console.log("entre al if de hsl");
+    for (let i = 0; i < selectedSize; i++) {
+      const colorDiv = document.createElement("div");
+      const color = generateRandomColorHSL();
+      colorDiv.classList.add("color-box");
+      colorDiv.style.backgroundColor = color;
+      container.appendChild(colorDiv);
+    }
   }
 };
 
 generateButton.addEventListener("click", function () {
+  generateColorBoxes();
+});
+
+selectedFormat.addEventListener("change", function () {
   generateColorBoxes();
 });
 
