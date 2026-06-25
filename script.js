@@ -66,8 +66,8 @@ const generateColorBoxes = () => {
   }
 };
 
-//funcion unica y exclusiva para cuando cambio el select de formato elegido
-//no se modifiquen los colores solo el formato
+//funcion unica y exclusiva para cuando cambio el select de formato elegido y
+//no se modifiquen los colores solo el formato y el span
 function hexToHsl(color) {
   if (typeof color === "string" && color.startsWith("#")) {
     let hex = color.slice(1);
@@ -151,6 +151,35 @@ function convertColor(color) {
   }
 }
 
+//Funciones que calculan la luz de mi color para mostrar el span blanco o negro segun sea necesario para mejo9r contraste
+const getLightness = (color) => {
+  if (color.startsWith("#")) {
+    let separateLight = hexToHsl(color);
+    separateLight = separateLight.split(",");
+    separateLight = separateLight[2].replace("%)", "");
+    separateLight = Number(separateLight);
+    return separateLight;
+  } else {
+    let separateLight = color.split(",");
+    separateLight = separateLight[3].replace("%)", "");
+    separateLight = Number(separateLight);
+    return separateLight;
+  }
+};
+
+const calculateSaturation = (array) => {
+  for (let i = 0; i < array.length; i++) {
+    const colorSpan = document.getElementById(`color-${i}`);
+    const lightness = getLightness(array[i]);
+    if (lightness <= 60) {
+      colorSpan.style.color = "white";
+    }
+    if (lightness >= 60) {
+      colorSpan.style.color = "black";
+    }
+  }
+};
+
 const radioButtons = document.querySelectorAll('input[name="size"]');
 radioButtons.forEach((radiobutton) => {
   radiobutton.addEventListener("click", function () {
@@ -183,3 +212,4 @@ miSelect.addEventListener("change", function () {
 }); // aun tenemos que ajustar estilos para letras etc. pero al menos tenemos la funcionalidad basica.
 
 generateColorBoxes();
+calculateSaturation(currentColors);

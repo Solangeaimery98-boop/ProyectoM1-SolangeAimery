@@ -59,6 +59,7 @@ nav {
 .hidden {
   opacity: 0;
   transition: opacity 0.3s ease-in;
+  color: aliceblue;
 }
 
 .color-box:hover {
