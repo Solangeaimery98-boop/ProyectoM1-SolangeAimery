@@ -24,111 +24,79 @@ const generateRandomColorHSL = () => {
   return color;
 };
 
+////codigo nuevo refactorizado
+const createColorBox = (color, index) => {
+  const colorDiv = document.createElement("div");
+  const colorSpan = document.createElement("span");
+  const buttonsContainer = document.createElement("div");
+  colorSpan.id = `color-${index}`;
+  colorDiv.id = `box-${index}`;
+  colorSpan.textContent = color;
+  colorSpan.classList.add("colorSpan");
+  buttonsContainer.classList.add("buttons-container");
+  buttonsContainer.innerHTML = `
+        <button class="save-btn" id="save-btn-${index}">
+          <p> ♡ </p>
+        </button>
+
+        <button class="copy-btn" id="copy-btn-${index}">
+          <p> ⧉ </p>
+        </button>
+      `;
+  colorDiv.classList.add("color-box");
+  colorDiv.style.backgroundColor = color;
+  colorDiv.appendChild(colorSpan);
+  colorDiv.appendChild(buttonsContainer);
+  return colorDiv;
+};
+
+const addColorBoxEvents = (index, color) => {
+  const colorButtonSave = document.getElementById(`save-btn-${index}`);
+  const colorButtonCopy = document.getElementById(`copy-btn-${index}`);
+  colorButtonCopy.addEventListener("click", function (event) {
+    navigator.clipboard.writeText(color);
+    showTooltipCopy(event);
+  });
+  colorButtonSave.addEventListener("click", function (event) {
+    currentColors[index].isSaved = !currentColors[index].isSaved;
+    if (currentColors[index].isSaved) {
+      colorButtonSave.textContent = "♥︎";
+    } else {
+      colorButtonSave.textContent = "♡";
+    }
+    showTooltipSave(event, currentColors[index].isSaved);
+  });
+};
+
 const generateColorBoxes = () => {
   const selectedRadioButton = document.querySelector(
     'input[name="size"]:checked',
   );
-
   container.innerHTML = "";
   const selectedSize = selectedRadioButton.value;
   currentColors = [];
+  let generateRandomColor;
 
   if (selectedFormat.value === "hex") {
-    for (let i = 0; i < selectedSize; i++) {
-      const colorDiv = document.createElement("div");
-      const colorSpan = document.createElement("span");
-      const buttonsContainer = document.createElement("div");
-      const color = generateRandomColorHex();
-      colorSpan.id = `color-${i}`;
-      colorDiv.id = `box-${i}`;
-      colorSpan.textContent = color;
-      colorSpan.classList.add("colorSpan");
-      buttonsContainer.classList.add("buttons-container");
-      buttonsContainer.innerHTML = `
-        <button class="save-btn" id="save-btn-${i}">
-          <p> ♡ </p>
-        </button>
-
-        <button class="copy-btn" id="copy-btn-${i}">
-          <p> ⧉ </p>
-        </button>
-      `;
-      colorDiv.classList.add("color-box");
-      colorDiv.style.backgroundColor = color;
-      colorDiv.appendChild(colorSpan);
-      colorDiv.appendChild(buttonsContainer);
-      container.appendChild(colorDiv);
-      currentColors.push({
-        color: color,
-        id: colorDiv.id,
-        isSaved: false,
-      });
-      const colorButtonSave = document.getElementById(`save-btn-${i}`);
-      const colorButtonCopy = document.getElementById(`copy-btn-${i}`);
-      colorButtonCopy.addEventListener("click", function () {
-        navigator.clipboard.writeText(color);
-        showTooltipCopy(event);
-      });
-      colorButtonSave.addEventListener("click", function (event) {
-        currentColors[i].isSaved = !currentColors[i].isSaved;
-        if (currentColors[i].isSaved) {
-          colorButtonSave.textContent = "♥︎";
-        } else {
-          colorButtonSave.textContent = "♡";
-        }
-        showTooltipSave(event, currentColors[i].isSaved);
-      });
-    }
+    generateRandomColor = generateRandomColorHex;
+  }
+  if (selectedFormat.value === "hsl") {
+    generateRandomColor = generateRandomColorHSL;
   }
 
-  if (selectedFormat.value === "hsl") {
-    for (let i = 0; i < selectedSize; i++) {
-      const colorDiv = document.createElement("div");
-      const colorSpan = document.createElement("span");
-      const buttonsContainer = document.createElement("div");
-      const color = generateRandomColorHSL();
-      colorDiv.id = `box-${i}`;
-      colorSpan.id = `color-${i}`;
-      colorSpan.textContent = color;
-      colorSpan.classList.add("colorSpan");
-      buttonsContainer.classList.add("buttons-container");
-      buttonsContainer.innerHTML = `
-        <button class="save-btn" id="save-btn-${i}">
-          <p> ♡ </p>
-        </button>
-
-        <button class="copy-btn" id="copy-btn-${i}">
-          <p> ⧉ </p>
-        </button>
-      `;
-      colorDiv.classList.add("color-box");
-      colorDiv.style.backgroundColor = color;
-      colorDiv.appendChild(colorSpan);
-      colorDiv.appendChild(buttonsContainer);
-      container.appendChild(colorDiv);
-      currentColors.push({
-        color: color,
-        id: colorDiv.id,
-        isSaved: false,
-      });
-      const colorButtonSave = document.getElementById(`save-btn-${i}`);
-      const colorButtonCopy = document.getElementById(`copy-btn-${i}`);
-      colorButtonSave.addEventListener("click", function (event) {
-        currentColors[i].isSaved = !currentColors[i].isSaved;
-        if (currentColors[i].isSaved) {
-          colorButtonSave.textContent = "♥︎";
-        } else {
-          colorButtonSave.textContent = "♡";
-        }
-        showTooltipSave(event, currentColors[i].isSaved);
-      });
-      colorButtonCopy.addEventListener("click", function (event) {
-        navigator.clipboard.writeText(color);
-        showTooltipCopy(event);
-      });
-    }
+  for (let i = 0; i < selectedSize; i++) {
+    const color = generateRandomColor();
+    const colorDiv = createColorBox(color, i);
+    currentColors.push({
+      color: color,
+      id: colorDiv.id,
+      isSaved: false,
+    });
+    container.appendChild(colorDiv);
+    addColorBoxEvents(i, color);
   }
 };
+////codigo nuevo refactorizado
 
 //funcion unica y exclusiva para cuando cambio el select de formato elegido y
 //no se modifiquen los colores solo el formato y el span
