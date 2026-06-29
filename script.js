@@ -24,7 +24,7 @@ const generateRandomColorHSL = () => {
   return color;
 };
 
-////codigo nuevo refactorizado
+////codigo nuevo refactorizado , lo dividi en funcionalidades por que hacia muchas cosas.
 const createColorBox = (color, index) => {
   const colorDiv = document.createElement("div");
   const colorSpan = document.createElement("span");
@@ -43,7 +43,6 @@ const createColorBox = (color, index) => {
           <i class="fa-regular fa-copy"></i>
         </button>
       `;
-  //<i class="fa-solid fa-heart"></i> // este voy a neceitar cuando lo neceste lleno, todavia me falta la logik
   colorDiv.classList.add("color-box");
   colorDiv.style.backgroundColor = color;
   colorDiv.appendChild(colorSpan);
@@ -79,7 +78,6 @@ const generateColorBoxes = () => {
   );
   container.innerHTML = "";
   const selectedSize = selectedRadioButton.value;
-  currentColors = [];
   let generateRandomColor;
 
   if (selectedFormat.value === "hex") {
@@ -90,15 +88,15 @@ const generateColorBoxes = () => {
   }
 
   for (let i = 0; i < selectedSize; i++) {
-    const color = generateRandomColor();
+    const color = currentColors[i].color;
     const colorDiv = createColorBox(color, i);
-    currentColors.push({
-      color: color,
-      id: colorDiv.id,
-      isSaved: false,
-    });
     container.appendChild(colorDiv);
     addColorBoxEvents(i, color);
+    const icon = document.getElementById(`save-btn-${i}`).querySelector("i"); //para que el corazon no cambie si esta guardado
+    if (currentColors[i].isSaved) {
+      icon.classList.remove("fa-regular");
+      icon.classList.add("fa-solid");
+    }
   }
 };
 ////codigo nuevo refactorizado
@@ -186,7 +184,7 @@ function convertColor(color) {
 
 const refreshPalette = (array) => {
   for (let i = 0; i < array.length; i++) {
-    colorBox = document.getElementById(array[i].id);
+    colorBox = document.getElementById(`box-${i}`);
     if (!array[i].isSaved) {
       if (currentColors[i].color.startsWith("#")) {
         const newColor = generateRandomColorHex();
@@ -200,6 +198,33 @@ const refreshPalette = (array) => {
       }
     }
   }
+};
+
+const updatePaletteSize = (selectedSize) => {
+  while (currentColors.length < selectedSize) {
+    let color;
+    if (selectedFormat.value === "hex") {
+      color = generateRandomColorHex();
+    } else {
+      color = generateRandomColorHSL();
+    }
+    currentColors.push({
+      color: color,
+      isSaved: false,
+    });
+  }
+  if (currentColors.length > selectedSize) {
+    for (let i = selectedSize; i < currentColors.length; i++) {
+      if (currentColors[i].isSaved) {
+        alert(
+          "No podés reducir la paleta porque hay colores bloqueados que desaparecerían.",
+        );
+        return false;
+      }
+    }
+    currentColors.length = selectedSize;
+  }
+  return true;
 };
 
 //Funciones que calculan la luz de mi color para mostrar el span blanco o negro segun sea necesario para mejo9r contraste
@@ -240,9 +265,15 @@ const calculateSaturation = (array) => {
 const radioButtons = document.querySelectorAll('input[name="size"]');
 radioButtons.forEach((radiobutton) => {
   radiobutton.addEventListener("click", function () {
-    // refreshPalette(currentColors);// aca todavia no se como guardar los colores y que se puedan agregar mas :c
-    generateColorBoxes();
-    calculateSaturation(currentColors);
+    const selectedRadioButton = document.querySelector(
+      'input[name="size"]:checked',
+    );
+    const selectedSize = Number(selectedRadioButton.value);
+    const updated = updatePaletteSize(selectedSize);
+    if (updated) {
+      generateColorBoxes();
+      calculateSaturation(currentColors);
+    }
   });
 });
 
@@ -312,6 +343,7 @@ const showTooltipSave = (event, isSaved) => {
   }, 1000);
 };
 
+updatePaletteSize(6);
 generateColorBoxes();
 calculateSaturation(currentColors);
 console.log(currentColors);
