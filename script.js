@@ -217,7 +217,7 @@ const updatePaletteSize = (selectedSize) => {
     for (let i = selectedSize; i < currentColors.length; i++) {
       if (currentColors[i].isSaved) {
         alert(
-          "No podés reducir la paleta porque hay colores bloqueados que desaparecerían.",
+          "🚨 You can't reduce the palette because there are locked colors that would disappear 🚨",
         );
         return false;
       }
