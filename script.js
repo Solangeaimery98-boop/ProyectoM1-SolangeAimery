@@ -219,6 +219,9 @@ const updatePaletteSize = (selectedSize) => {
         alert(
           "🚨 You can't reduce the palette because there are locked colors that would disappear 🚨",
         );
+        document.querySelector(
+          `input[name="size"][value="${currentColors.length}"]`,
+        ).checked = true;
         return false;
       }
     }
