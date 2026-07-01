@@ -6,7 +6,7 @@
 
 ### 🚀 Live Demo
 
-👉 **https://TU-LINK-DE-GITHUB-PAGES](https://solangeaimery98-boop.github.io/ProyectoM1-SolangeAimery/**
+👉 **https://solangeaimery98-boop.github.io/ProyectoM1-SolangeAimery/**
 
 </p>
 
